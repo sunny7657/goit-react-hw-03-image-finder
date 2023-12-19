@@ -2,5 +2,10 @@ import axios from 'axios';
 
 export const api = axios.create({
   baseURL: 'https://pixabay.com/api/',
-  params: { key: '40411285-e0a8815789142127d1d60a3c2' },
+  params: {
+    key: '40411285-e0a8815789142127d1d60a3c2',
+    image_type: 'photo',
+    orientation: 'horizontal',
+    per_page: 12,
+  },
 });
