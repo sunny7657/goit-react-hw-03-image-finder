@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import { nanoid } from 'nanoid';
 
-const StyledGallery = styled.div`
+const StyledGallery = styled.ul`
   display: grid;
   max-width: calc(100vw - 48px);
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -16,17 +16,17 @@ const StyledGallery = styled.div`
 
 export const ImageGallery = ({ data, isLoading, error, isShowImages }) => {
   return (
-    <StyledGallery>
+    <>
       {isLoading && <h2>Loading...</h2>}
       {error && <h2>{error}</h2>}
 
       {isShowImages && data && (
-        <ul className="gallery">
+        <StyledGallery className="gallery">
           {data.map(el => (
             <ImageGalleryItem imageData={el} key={nanoid()} />
           ))}
-        </ul>
+        </StyledGallery>
       )}
-    </StyledGallery>
+    </>
   );
 };

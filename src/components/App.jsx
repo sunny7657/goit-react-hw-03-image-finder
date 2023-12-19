@@ -66,6 +66,7 @@ export class App extends Component {
   };
 
   render() {
+    console.log(this.state);
     const { data, isLoading, error, isShowImages } = this.state;
     return (
       <StyledApp>
