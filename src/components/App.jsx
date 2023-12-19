@@ -3,6 +3,7 @@ import { ImageGallery } from './ImageGallery/ImageGallery.styled';
 import { Searchbar } from './Searchbar/Searchbar.styled';
 import { Component } from 'react';
 import { getAllImages } from 'components/api/images';
+import { Button } from './Button/Button';
 
 const StyledApp = styled.div`
   display: grid;
@@ -77,6 +78,7 @@ export class App extends Component {
           error={error}
           isShowImages={isShowImages}
         />
+        {isShowImages && data && <Button />}
       </StyledApp>
     );
   }

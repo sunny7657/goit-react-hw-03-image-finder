@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import { nanoid } from 'nanoid';
+import { Loader } from 'components/Loader/Loader';
 
 const StyledGallery = styled.ul`
   display: grid;
@@ -17,15 +18,17 @@ const StyledGallery = styled.ul`
 export const ImageGallery = ({ data, isLoading, error, isShowImages }) => {
   return (
     <>
-      {isLoading && <h2>Loading...</h2>}
+      {isLoading && <Loader />}
       {error && <h2>{error}</h2>}
 
       {isShowImages && data && (
-        <StyledGallery className="gallery">
-          {data.map(el => (
-            <ImageGalleryItem imageData={el} key={nanoid()} />
-          ))}
-        </StyledGallery>
+        <>
+          <StyledGallery className="gallery">
+            {data.map(el => (
+              <ImageGalleryItem imageData={el} key={nanoid()} />
+            ))}
+          </StyledGallery>
+        </>
       )}
     </>
   );
