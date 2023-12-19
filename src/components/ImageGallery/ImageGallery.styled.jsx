@@ -1,5 +1,5 @@
-import axios from 'axios';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
+import { getAllImages } from 'components/api/images';
 import { Component } from 'react';
 import styled from 'styled-components';
 
@@ -15,24 +15,37 @@ const StyledGallery = styled.div`
   margin-right: auto;
 `;
 
-axios.defaults.baseURL = 'https://pixabay.com/api/';
-const API_KEY = '40411285-e0a8815789142127d1d60a3c2';
-
 export class ImageGallery extends Component {
   state = {
     data: null,
+    isLoading: false,
+    error: '',
   };
 
   componentDidMount() {
-    axios(
-      `?q=cat&page=1&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
-    ).then(response => this.setState({ data: response.data.hits }));
+    this.getImages();
   }
 
+  getImages = async () => {
+    try {
+      this.setState({ isLoading: true, error: '' });
+      const response = await getAllImages();
+      this.setState({ data: response.hits });
+    } catch (err) {
+      console.log(err);
+      this.setState({ error: err.message });
+    } finally {
+      this.setState({ isLoading: false });
+    }
+  };
+
   render() {
-    const { data } = this.state;
+    const { data, isLoading, error } = this.state;
     return (
       <StyledGallery>
+        {isLoading && <h2>Loading...</h2>}
+        {error && <h2>{error}</h2>}
+
         {data &&
           data.map(el => (
             <ul className="gallery">
