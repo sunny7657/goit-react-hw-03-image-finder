@@ -26,6 +26,10 @@ const StyledButton = styled.button`
   }
 `;
 
-export const Button = () => {
-  return <StyledButton type="button">Load more</StyledButton>;
+export const Button = ({ onClick }) => {
+  return (
+    <StyledButton type="button" onClick={onClick}>
+      Load more
+    </StyledButton>
+  );
 };

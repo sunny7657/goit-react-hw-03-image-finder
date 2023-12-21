@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid';
+import { Component } from 'react';
 import styled from 'styled-components';
 
 const StyledItem = styled.li`
@@ -19,10 +20,21 @@ const StyledImg = styled.img`
   }
 `;
 
-export const ImageGalleryItem = ({ imageData }) => {
-  return (
-    <StyledItem className="gallery-item" key={nanoid()}>
-      <StyledImg src={imageData.webformatURL} alt={imageData.tags} />
-    </StyledItem>
-  );
-};
+export class ImageGalleryItem extends Component {
+  handleClick = () => {
+    this.props.onClick(this.props.largeImageURL);
+  };
+
+  render() {
+    const { imageData } = this.props;
+    return (
+      <StyledItem
+        className="gallery-item"
+        key={nanoid()}
+        onClick={this.handleClick}
+      >
+        <StyledImg src={imageData.webformatURL} alt={imageData.tags} />
+      </StyledItem>
+    );
+  }
+}

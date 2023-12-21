@@ -15,7 +15,13 @@ const StyledGallery = styled.ul`
   margin-right: auto;
 `;
 
-export const ImageGallery = ({ data, isLoading, error, isShowImages }) => {
+export const ImageGallery = ({
+  data,
+  isLoading,
+  error,
+  isShowImages,
+  onSelect,
+}) => {
   return (
     <>
       {isLoading && <Loader />}
@@ -25,7 +31,11 @@ export const ImageGallery = ({ data, isLoading, error, isShowImages }) => {
         <>
           <StyledGallery className="gallery">
             {data.map(el => (
-              <ImageGalleryItem imageData={el} key={nanoid()} />
+              <ImageGalleryItem
+                imageData={el}
+                key={nanoid()}
+                onClick={onSelect}
+              />
             ))}
           </StyledGallery>
         </>
