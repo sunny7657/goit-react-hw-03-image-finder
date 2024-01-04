@@ -1,118 +1,69 @@
-import styled from 'styled-components';
-import { ImageGallery } from './ImageGallery/ImageGallery.styled';
-import { Searchbar } from './Searchbar/Searchbar.styled';
 import { Component } from 'react';
-import { getAllImages } from 'components/api/images';
+import { Searchbar } from './Searchbar/Searchbar';
+import { ImageGallery } from './ImageGallery/ImageGallery';
+import * as ImageService from 'Service/image-service';
 import { Button } from './Button/Button';
-import { Modal } from './Modal/Modal';
-
-const StyledApp = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-gap: 16px;
-  padding-bottom: 24px;
-`;
+import { Loader } from './Loader/Loader';
 
 export class App extends Component {
   state = {
-    data: null,
-    isLoading: false,
-    error: '',
     query: '',
     page: 1,
+    images: [],
     total: 0,
-    largeImageURL: '',
-
-    isShowImages: false,
+    error: null,
+    isLoading: false,
   };
 
-  componentDidMount() {
-    // this.getImages();
-  }
+  onFormSubmit = value => {
+    this.setState({
+      query: value,
+      page: 1,
+      images: [],
+      total: 0,
+      error: null,
+    });
+  };
 
   componentDidUpdate(prevProps, prevState) {
-    if (
-      this.state.isShowImages !== prevState.isShowImages &&
-      this.state.isShowImages
-    ) {
-      this.getImages();
-    }
-
-    if (
-      this.state.isShowImages !== prevState.isShowImages &&
-      !this.state.isShowImages
-    ) {
-      this.setState({ data: null });
-    }
-    if (prevState.page !== this.state.page) {
-      this.getImages();
+    const { query, page } = this.state;
+    if (prevState.query !== query || prevState.page !== page) {
+      this.getApi(query, page);
     }
   }
 
-  getImages = async () => {
-    const { query, page } = this.state;
-    if (!query) return;
-
+  getApi = async (query, page) => {
+    if (this.state.query === '') return;
+    this.setState({ isLoading: true });
     try {
-      this.setState({ isLoading: true, error: '' });
-      const response = await getAllImages(query, page);
-      this.setState(prev => ({
-        data: prev.data ? [...prev.data, ...response.hits] : response.hits,
-        total: response.totalHits,
+      const { hits, totalHits } = await ImageService.getImages(query, page);
+      this.setState(prevState => ({
+        images: [...prevState.images, ...hits],
+        total: totalHits,
       }));
-    } catch (err) {
-      console.log(err);
-      this.setState({ error: err.message });
+    } catch (error) {
+      this.setState({ error: error.message });
     } finally {
       this.setState({ isLoading: false });
     }
   };
 
-  onSubmit = query => {
-    this.setState(prev => ({
-      data: null,
-      query,
-      page: 1,
-      isShowImages: !prev.isShowImages,
-    }));
-  };
-
-  onLoadMoreClick = () => {
-    this.setState(prev => ({ page: prev.page + 1 }));
-  };
-
-  openModal = largeImageURL => {
-    this.setState({ largeImageURL });
-  };
-
-  closeModal = () => {
-    this.setState({ largeImageURL: null });
+  onClickLoadMore = e => {
+    // e.preventDefault();
+    this.setState(prevState => ({ page: prevState.page + 1 }));
   };
 
   render() {
-    console.log(this.state);
-    const { data, isLoading, error, isShowImages, total, largeImageURL } =
-      this.state;
-    console.log(total);
+    const { images, total, isLoading } = this.state;
     return (
-      <StyledApp>
-        <Searchbar onSubmit={this.onSubmit} />
-        <ImageGallery
-          data={data}
-          isLoading={isLoading}
-          error={error}
-          isShowImages={isShowImages}
-          onSelect={this.openModal}
-          // total={total}
-        />
-
-        {isShowImages && data && data.length < total && (
-          <Button onClick={this.onLoadMoreClick} />
+      <div className="App">
+        <Searchbar onSubmit={this.onFormSubmit} />
+        {isLoading && <Loader />}
+        {images.length > 0 && <ImageGallery images={images} />}
+        {images.length > 0 && total > images.length && (
+          <Button onClick={this.onClickLoadMore} />
         )}
-        {largeImageURL && (
-          <Modal largeImageURL={largeImageURL} onClose={this.closeModal} />
-        )}
-      </StyledApp>
+      </div>
     );
   }
 }
