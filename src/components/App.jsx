@@ -48,17 +48,20 @@ export class App extends Component {
     }
   };
 
-  onClickLoadMore = e => {
-    // e.preventDefault();
+  onClickLoadMore = () => {
     this.setState(prevState => ({ page: prevState.page + 1 }));
   };
 
   render() {
-    const { images, total, isLoading } = this.state;
+    const { query, images, total, error, isLoading } = this.state;
     return (
       <div className="App">
         <Searchbar onSubmit={this.onFormSubmit} />
         {isLoading && <Loader />}
+        {error && <h2 style={{ textAlign: 'center' }}>Error {error}</h2>}
+        {images.length === 0 && query !== '' && !isLoading && (
+          <h2 style={{ textAlign: 'center' }}>There is no matches 😒</h2>
+        )}
         {images.length > 0 && <ImageGallery images={images} />}
         {images.length > 0 && total > images.length && (
           <Button onClick={this.onClickLoadMore} />
