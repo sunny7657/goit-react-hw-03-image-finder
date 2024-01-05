@@ -20,7 +20,7 @@ export class Modal extends Component {
     return (
       <div className="Overlay" onClick={hideModal}>
         <div className="Modal">
-          <img src={imageUrl} alt="big_image" />
+          <img src={imageUrl} alt="big_image" className="LargeImg" />
         </div>
       </div>
     );
