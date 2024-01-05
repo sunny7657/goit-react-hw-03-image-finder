@@ -4,6 +4,9 @@ import { ImageGallery } from './ImageGallery/ImageGallery';
 import * as ImageService from 'Service/image-service';
 import { Button } from './Button/Button';
 import { Loader } from './Loader/Loader';
+import { ImageGalleryItem } from './ImageGalleryItem/ImageGalleryItem';
+import { Modal } from './Modal/Modal';
+import { nanoid } from 'nanoid';
 
 export class App extends Component {
   state = {
@@ -13,6 +16,7 @@ export class App extends Component {
     total: 0,
     error: null,
     isLoading: false,
+    largeUrl: '',
   };
 
   onFormSubmit = value => {
@@ -52,8 +56,16 @@ export class App extends Component {
     this.setState(prevState => ({ page: prevState.page + 1 }));
   };
 
+  onImageClick = largeUrl => {
+    this.setState({ largeUrl });
+  };
+
+  hideModal = () => {
+    this.setState({ largeUrl: '' });
+  };
+
   render() {
-    const { query, images, total, error, isLoading } = this.state;
+    const { query, images, total, error, isLoading, largeUrl } = this.state;
     return (
       <div className="App">
         <Searchbar onSubmit={this.onFormSubmit} />
@@ -62,7 +74,20 @@ export class App extends Component {
         {images.length === 0 && query !== '' && !isLoading && (
           <h2 style={{ textAlign: 'center' }}>There is no matches 😒</h2>
         )}
-        {images.length > 0 && <ImageGallery images={images} />}
+        {images.length > 0 && (
+          <ImageGallery>
+            {images.map(image => (
+              <ImageGalleryItem
+                key={nanoid()}
+                image={image}
+                onClick={this.onImageClick}
+              />
+            ))}
+          </ImageGallery>
+        )}
+        {largeUrl !== '' && (
+          <Modal imageUrl={largeUrl} hideModal={this.hideModal} />
+        )}
         {images.length > 0 && total > images.length && (
           <Button onClick={this.onClickLoadMore} />
         )}
