@@ -7,6 +7,12 @@ export class Modal extends Component {
     }
   };
 
+  handleOverlayClick = e => {
+    if (e.target === e.currentTarget) {
+      this.props.hideModal();
+    }
+  };
+
   componentDidMount() {
     document.addEventListener('keydown', this.handleEsc);
   }
@@ -16,9 +22,9 @@ export class Modal extends Component {
   }
 
   render() {
-    const { imageUrl, hideModal } = this.props;
+    const { imageUrl } = this.props;
     return (
-      <div className="Overlay" onClick={hideModal}>
+      <div className="Overlay" onClick={this.handleOverlayClick}>
         <div className="Modal">
           <img src={imageUrl} alt="big_image" className="LargeImg" />
         </div>
